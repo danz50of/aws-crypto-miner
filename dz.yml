@@ -36,9 +36,8 @@ Resources:
     Properties:
       InstanceType: !Ref InstanceType
       KeyName: kaspa
-      ImageId: ami-08734ec479a1ace4a  # Ubuntu 20.04 LTS (x86_64) – update per region
+      ImageId: ami-03aa99ddf5498ceb9  # DZ found by searching AMI catelog
       SubnetId: !Ref SubnetId
-      AssociatePublicIpAddress: true
       SecurityGroupIds:
         - !Ref KaspaMinerSecurityGroup
       Tags:
@@ -57,6 +56,7 @@ Resources:
           reboot
 
           # Clone Kaspa node + Stratum setup
+          cd ~
           git clone https://github.com/danz50of/Kaspa-Full-Node-Mining-Quick-Start.git
           cd Kaspa-Full-Node-Mining-Quick-Start
           ./tldr.sh
