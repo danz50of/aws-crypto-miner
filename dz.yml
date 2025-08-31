@@ -46,6 +46,7 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          sudo -i << 'EOF'
           apt update && apt upgrade -y
           apt install -y docker.io unzip curl git screen
           systemctl start docker
@@ -53,12 +54,15 @@ Resources:
 
           # Install NVIDIA drivers
           apt install -y nvidia-driver-535
-          reboot
 
+          curl -L "https://github.com/docker/compose/releases/download/v2.24.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          
           # Clone Kaspa node + Stratum setup
           cd ~
-          git clone https://github.com/danz50of/Kaspa-Full-Node-Mining-Quick-Start.git
+          git clone --branch Usage --single-branch https://github.com/danz50of/Kaspa-Full-Node-Mining-Quick-Start.git
           cd Kaspa-Full-Node-Mining-Quick-Start
+
           ./tldr.sh
 
           # Install lolMiner
@@ -66,12 +70,14 @@ Resources:
           wget https://github.com/Lolliedieb/lolMiner-releases/releases/download/1.82/lolMiner_v1.82_Lin64.tar.gz
           tar -xvzf lolMiner_v1.82_Lin64.tar.gz
           cd lolMiner_v1.82
-          chmod +x lolMiner
+          chmod +x lolMiner    
 
           # Start mining
           screen -dmS kaspa-miner ./lolMiner --algo KASPA \
             --pool 127.0.0.1:16112 \
             --user ${KaspaWallet}
+
+          EOF
 
 Outputs:
   InstancePublicIP:
