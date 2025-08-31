@@ -1,3 +1,5 @@
 src/template-custom-vpc.yml
 src/template-default-vpc.yml
 src/lambdas/*.min.py
+*.pem
+*.env
