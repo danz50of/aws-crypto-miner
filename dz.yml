@@ -6,25 +6,19 @@ Parameters:
     Type: String
     Default: g5.xlarge
     Description: GPU-enabled EC2 instance type
-  KeyName:
-    Type: AWS::EC2::KeyPair::KeyName
-    Description: Name of an existing EC2 KeyPair
   KaspaWallet:
     Type: String
-    Description: Your Kaspa wallet address
-  VpcId:
-    Type: AWS::EC2::VPC::Id
-    Description: VPC to launch the instance in
+    Description: "qqypu226z2et65wnwcz5dmt74azka0k6g28vqm4tuxdz694udqzp2stt55eq3"
   SubnetId:
-    Type: AWS::EC2::Subnet::Id
-    Description: Subnet within the VPC
+    Type: subnet-088f6cb7a04c21d34
+    Description: Subnet within your VPC
 
 Resources:
   KaspaMinerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow SSH and Stratum traffic
-      VpcId: !Ref VpcId
+      VpcId: vpc-037436d429c6e7de0
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -39,11 +33,12 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref InstanceType
-      KeyName: !Ref KeyName
+      KeyName: kaspa
+      ImageId: ami-0c94855ba95c71c99  # Ubuntu 20.04 LTS (x86_64) – update per region
       SubnetId: !Ref SubnetId
+      AssociatePublicIpAddress: true
       SecurityGroupIds:
         - !Ref KaspaMinerSecurityGroup
-      ImageId: ami-0c94855ba95c71c99 # Ubuntu 20.04 LTS (x86_64) – update per region
       Tags:
         - Key: Name
           Value: KaspaSoloMiner
