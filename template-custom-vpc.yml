@@ -55,12 +55,12 @@ Parameters:
     - ERG
     - KAS
     - ETC
-    Default: RVN
+    Default: KAS
 
   WalletAddress:
     Type: String
     Description: Wallet Address (use BTC address regardless of the Coin type)
-    Default: "bc1qjlm3kjy87zs6qywmwz2u0ytlde9z4whyzflg38"
+    Default: "qqypu226z2et65wnwcz5dmt74azka0k6g28vqm4tuxdz694udqzp2stt55eq3"
 
   PricingPlan:
     Type: String
@@ -69,15 +69,17 @@ Parameters:
     - spot
     - ondemand
     - both
-    Default: both
+    Default: spot
 
   VpcId:
     Description: The VPC where this stack will be deployed
     Type: AWS::EC2::VPC::Id
+    Default: vpc-037436d429c6e7de0
 
   SubnetIds:
     Description: The subnets where the instances will be deployed - at least 3 subnets!
     Type: List<AWS::EC2::Subnet::Id>
+    Default: subnet-088f6cb7a04c21d34
 
 Mappings:
   ImageMap:
