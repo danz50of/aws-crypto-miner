@@ -7,10 +7,12 @@ Parameters:
     Default: g5.xlarge
     Description: GPU-enabled EC2 instance type
   KaspaWallet:
-    Type: String
-    Description: "qqypu226z2et65wnwcz5dmt74azka0k6g28vqm4tuxdz694udqzp2stt55eq3"
+    Type: String 
+    Default: qqypu226z2et65wnwcz5dmt74azka0k6g28vqm4tuxdz694udqzp2stt55eq3
+    Description: Your Kaspa wallet address
   SubnetId:
-    Type: subnet-088f6cb7a04c21d34
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-088f6cb7a04c21d34
     Description: Subnet within your VPC
 
 Resources:
@@ -34,7 +36,7 @@ Resources:
     Properties:
       InstanceType: !Ref InstanceType
       KeyName: kaspa
-      ImageId: ami-0c94855ba95c71c99  # Ubuntu 20.04 LTS (x86_64) – update per region
+      ImageId: ami-08734ec479a1ace4a  # Ubuntu 20.04 LTS (x86_64) – update per region
       SubnetId: !Ref SubnetId
       AssociatePublicIpAddress: true
       SecurityGroupIds:
