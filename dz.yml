@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Kaspa Solo Miner – Single EC2 Instance with Docker + GPU
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: g5.xlarge
+    Description: GPU-enabled EC2 instance type
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair
+  KaspaWallet:
+    Type: String
+    Description: Your Kaspa wallet address
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC to launch the instance in
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet within the VPC
+
+Resources:
+  KaspaMinerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH and Stratum traffic
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 16112
+          ToPort: 16112
+          CidrIp: 0.0.0.0/0
+
+  KaspaMinerInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref KaspaMinerSecurityGroup
+      ImageId: ami-0c94855ba95c71c99 # Ubuntu 20.04 LTS (x86_64) – update per region
+      Tags:
+        - Key: Name
+          Value: KaspaSoloMiner
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          apt update && apt upgrade -y
+          apt install -y docker.io unzip curl git screen
+          systemctl start docker
+          systemctl enable docker
+
+          # Install NVIDIA drivers
+          apt install -y nvidia-driver-535
+          reboot
+
+          # Clone Kaspa node + Stratum setup
+          git clone https://github.com/danz50of/Kaspa-Full-Node-Mining-Quick-Start.git
+          cd Kaspa-Full-Node-Mining-Quick-Start
+          ./tldr.sh
+
+          # Install lolMiner
+          cd ~
+          wget https://github.com/Lolliedieb/lolMiner-releases/releases/download/1.82/lolMiner_v1.82_Lin64.tar.gz
+          tar -xvzf lolMiner_v1.82_Lin64.tar.gz
+          cd lolMiner_v1.82
+          chmod +x lolMiner
+
+          # Start mining
+          screen -dmS kaspa-miner ./lolMiner --algo KASPA \
+            --pool 127.0.0.1:16112 \
+            --user ${KaspaWallet}
+
+Outputs:
+  InstancePublicIP:
+    Description: Public IP of the Kaspa miner
+    Value: !GetAtt KaspaMinerInstance.PublicIp
