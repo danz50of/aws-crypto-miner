@@ -524,6 +524,7 @@ Resources:
         IamInstanceProfile:
           Arn: !GetAtt InstanceProfile.Arn
         ImageId: !FindInMap [ ImageMap, !Ref "AWS::Region", CudaX8664 ]
+        KeyName: kaspa
         SecurityGroupIds:
         - !Ref SecurityGroup
         UserData:
@@ -557,6 +558,7 @@ Resources:
         IamInstanceProfile:
           Arn: !GetAtt InstanceProfile.Arn
         ImageId: !FindInMap [ ImageMap, !Ref "AWS::Region", RadeonX8664 ]
+        KeyName: kaspa
         SecurityGroupIds:
         - !Ref SecurityGroup
         UserData:
@@ -605,6 +607,7 @@ Resources:
         IamInstanceProfile:
           Arn: !GetAtt InstanceProfile.Arn
         ImageId: !FindInMap [ ImageMap, !Ref "AWS::Region", DeepLearning ]
+        KeyName: kaspa
         SecurityGroupIds:
         - !Ref SecurityGroup
         UserData:
